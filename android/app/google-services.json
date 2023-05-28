@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1088799456634",
+    "project_id": "medtriangle-cc190",
+    "storage_bucket": "medtriangle-cc190.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088799456634:android:3c1efbb9721a1ef8b76ac3",
+        "android_client_info": {
+          "package_name": "com.example.medtriangle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB19HphrB72YpCFaqgDuOWWkx90ixL_9aI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
