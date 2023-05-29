@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import 'package:medtriangle/models/lab_test_model.dart';
 
 import 'package:pdf/pdf.dart';
@@ -67,7 +68,9 @@ class _LabTestsScreenState extends State<LabTestsScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: labTestInfo.length,
                         itemBuilder: ((context, index) {
-                          return LabTestTile(test: labTestInfo[index]);
+                          return labTestInfo[index].name.trim().isEmpty
+                              ? Container()
+                              : LabTestTile(test: labTestInfo[index]);
                         })),
                   ),
                 ],
@@ -92,19 +95,28 @@ class LabTestTile extends StatefulWidget {
 class _LabTestTileState extends State<LabTestTile> {
   Future<void> generatePDF(LabTestModel labTest) async {
     final doc = pw.Document();
-    doc.addPage(
-      pw.Page(
-        build: (pw.Context context) => pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: [
-            pw.Text('Name: ${labTest.name}'),
-            pw.Text('Date: ${labTest.date}'),
-            pw.Text('Result: ${labTest.result}'),
-            // Add additional fields here
-          ],
-        ),
+    // final image = await imageFromAssetBundle('assets/splash.png');
+    final netImage = await networkImage(labTest.imageUrl);
+
+    doc.addPage(pw.Page(
+      build: (pw.Context context) => pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text('Name: ${labTest.name}',
+              style: const pw.TextStyle(fontSize: 20)),
+          pw.Text('Date: ${labTest.date}',
+              style: const pw.TextStyle(fontSize: 20)),
+          pw.Text('Result: ${labTest.result}',
+              style: const pw.TextStyle(fontSize: 20)),
+          if (labTest.imageUrl.isNotEmpty)
+            pw.Container(
+              margin: const pw.EdgeInsets.symmetric(vertical: 10.0),
+              alignment: pw.Alignment.center,
+              child: pw.Image(netImage),
+            ),
+        ],
       ),
-    );
+    ));
 
     final bytes = await doc.save();
 

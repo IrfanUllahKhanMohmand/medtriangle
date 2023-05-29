@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/patient_info_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PatientInformationScreen extends StatefulWidget {
   const PatientInformationScreen({super.key});
@@ -26,6 +27,21 @@ class _PatientInformationScreenState extends State<PatientInformationScreen> {
       throw Exception('Patient not found');
     }
   }
+
+  Future<void> _launchUrl(String phoneNumber) async {
+    final Uri _url = Uri.parse('tel:$phoneNumber');
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+  // void _makePhoneCall(String phoneNumber) async {
+  //   final Uri _url = Uri.parse('tel:$phoneNumber');
+  //   Future<void> _launchUrl() async {
+  //     if (!await launchUrl(_url)) {
+  //       throw Exception('Could not launch $_url');
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +73,14 @@ class _PatientInformationScreenState extends State<PatientInformationScreen> {
                   ),
                   const SizedBox(height: 16),
                   const SizedBox(height: 16),
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundImage: NetworkImage(patientInfo.imageUrl),
-                  ),
+                  patientInfo.imageUrl.isNotEmpty
+                      ? CircleAvatar(
+                          radius: 60,
+                          backgroundImage: NetworkImage(patientInfo.imageUrl),
+                        )
+                      : const CircleAvatar(
+                          radius: 60,
+                        ),
                   const SizedBox(height: 16),
                   InfoTile(keey: 'Name', valuee: patientInfo.name),
                   const SizedBox(height: 16),
@@ -83,6 +103,46 @@ class _PatientInformationScreenState extends State<PatientInformationScreen> {
                   InfoTile(keey: 'Ward #', valuee: patientInfo.ward),
                   const SizedBox(height: 16),
                   InfoTile(keey: 'Bed #', valuee: patientInfo.bed),
+                  const SizedBox(height: 16),
+                  InfoTile(
+                      keey: 'Appoint #', valuee: patientInfo.appointNumber),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .40,
+                          child: const Text(
+                            'Dr. Contact #',
+                            softWrap: true,
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .50,
+                          child: Row(
+                            children: [
+                              Text(
+                                patientInfo.doctorNumber,
+                                softWrap: true,
+                                style: const TextStyle(fontSize: 16),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(width: 6),
+                              InkWell(
+                                  onTap: () {
+                                    _launchUrl(patientInfo.doctorNumber.trim());
+                                  },
+                                  child: const Icon(Icons.phone))
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 16),
                 ],
               ),
@@ -110,30 +170,21 @@ class InfoTile extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width * .35,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '$keey:',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            width: MediaQuery.of(context).size.width * .40,
+            child: Text(
+              '$keey:',
+              softWrap: true,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           SizedBox(
-            width: MediaQuery.of(context).size.width * .55,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  valuee,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
+            width: MediaQuery.of(context).size.width * .50,
+            child: Text(
+              valuee,
+              softWrap: true,
+              style: const TextStyle(fontSize: 16),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
