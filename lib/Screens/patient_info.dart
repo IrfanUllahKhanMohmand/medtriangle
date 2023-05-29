@@ -29,9 +29,9 @@ class _PatientInformationScreenState extends State<PatientInformationScreen> {
   }
 
   Future<void> _launchUrl(String phoneNumber) async {
-    final Uri _url = Uri.parse('tel:$phoneNumber');
-    if (!await launchUrl(_url)) {
-      throw Exception('Could not launch $_url');
+    final Uri url = Uri.parse('tel:$phoneNumber');
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
     }
   }
   // void _makePhoneCall(String phoneNumber) async {

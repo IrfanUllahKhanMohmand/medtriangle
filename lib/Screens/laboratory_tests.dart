@@ -1,10 +1,15 @@
+// ignore_for_file: depend_on_referenced_packages
+
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:medtriangle/models/lab_test_model.dart';
+import 'package:open_file_plus/open_file_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
@@ -120,7 +125,41 @@ class _LabTestTileState extends State<LabTestTile> {
 
     final bytes = await doc.save();
 
-    Printing.sharePdf(bytes: bytes, filename: 'lab_test.pdf');
+    // Printing.sharePdf(bytes: bytes, filename: 'lab_test.pdf');
+    final directory = await getExternalStorageDirectory();
+    final folderPath = '${directory!.path}/medtriangle';
+    await Directory(folderPath).create(recursive: true);
+    final file = File(
+        '$folderPath/${DateTime.now().millisecondsSinceEpoch}lab_test.pdf');
+    await file.writeAsBytes(bytes);
+    // ignore: use_build_context_synchronously
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Success'),
+          content: const Text('PDF file saved successfully'),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                final filePath = file.path;
+                await OpenFile.open(filePath);
+
+                setState(() {});
+              },
+              child: const Text('Open'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

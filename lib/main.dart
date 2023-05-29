@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +43,7 @@ class MyApp extends StatelessWidget {
               return const BottomNavBarScreen();
             } else {
               // User is not logged in, navigate to the LoginScreen
-              return LoginScreen();
+              return const LoginScreen();
             }
           }
         },
@@ -61,7 +63,7 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
   void _logout(BuildContext context) {
     FirebaseAuth.instance.signOut();
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
     Fluttertoast.showToast(msg: 'Logged out');
   }
 

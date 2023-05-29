@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -5,6 +7,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -20,8 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
@@ -31,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Navigate to the next screen
       Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BottomNavBarScreen()));
+          MaterialPageRoute(builder: (context) => const BottomNavBarScreen()));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         Fluttertoast.showToast(msg: 'No user found for that email');
@@ -92,7 +95,7 @@ class NextScreen extends StatelessWidget {
   void _logout(BuildContext context) {
     FirebaseAuth.instance.signOut();
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
     Fluttertoast.showToast(msg: 'Logged out');
   }
 
